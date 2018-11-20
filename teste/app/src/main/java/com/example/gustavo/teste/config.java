@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class config extends AppCompatActivity {
     Button bt;
@@ -25,19 +26,34 @@ public class config extends AppCompatActivity {
         bt.setBackgroundColor(Color.rgb(54,73,158));
         bt.setTextColor(Color.WHITE);
 
-
-        bt.setOnClickListener(new View.OnClickListener() {
+        // Call the other activity, passing parameters into a intent
+        bt.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                bt.setBackgroundColor(Color.rgb(255, 165, 0));
-                bt.setTextColor(Color.WHITE);
-                OpenActivity(this);
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        bt.setBackgroundColor(Color.rgb(255, 165, 0));
+                        bt.setTextColor(Color.WHITE);
+                        if (txt1.getText().toString().equals("")|| txt2.getText().toString().equals("")){
+                            Toast.makeText(getBaseContext(),"Preencher todos os campo !",Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            OpenActivity();
+                        }
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        bt.setBackgroundColor(Color.rgb(54,73,158));
+                        bt.setTextColor(Color.WHITE);
+                        break;
+                }
+                return false;
             }
         });
     }
 
-
-    public void OpenActivity(View.OnClickListener view){
+    //intent method. finish() the config Activity
+    public void OpenActivity(){
         Intent intent = new Intent(this,MainActivity.class);
         intent.putExtra("param",txt1.getText().toString()+":"+txt2.getText().toString());
         startActivity(intent);

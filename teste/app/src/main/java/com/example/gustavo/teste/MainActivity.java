@@ -18,7 +18,6 @@ import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
     protected Socket socket;
-    protected Socket_AsyncTask Enviar;
     Button Btn;
 
     @Override
@@ -31,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         Btn.setTextColor(Color.WHITE);
 
 
+        //getting parameters from intent
         Intent intent      = getIntent();
         final String param = intent.getStringExtra("param");
         String pr [ ] = param.split(":");
@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(getBaseContext(),param,Toast.LENGTH_LONG).show();
 
+
+        //action from  "Apertar" button
         Btn.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -61,9 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //create socket threads and execute
     public void CreateConnection(String ip,int port,String command){
-       Enviar =  new Socket_AsyncTask(ip,port,command);
-        new Thread() {
+     final Socket_AsyncTask   Enviar =  new Socket_AsyncTask(ip,port,command);
+
+       new Thread() {
             @Override
             public void run() {
                 Enviar.execute();
@@ -92,17 +96,15 @@ public class MainActivity extends AppCompatActivity {
 
                 if(socket.isConnected()) {
                     dataOutputStream.writeBytes(this.commands);
-                    Toast.makeText(getBaseContext(),"Comando Enviado",Toast.LENGTH_SHORT).show();
                     dataOutputStream.close();
                     socket.close();
-
+                    Toast.makeText(getBaseContext(),"Comando Enviado",Toast.LENGTH_SHORT).show();
 
                 }
                 else{
                     Toast.makeText(getBaseContext(),"Connecting...",Toast.LENGTH_LONG).show();
                 }
-                socket = null;
-            }catch (UnknownHostException e){ Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_LONG);}catch (IOException e){ Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_LONG);}catch (Exception e){e.printStackTrace();}
+            }catch (UnknownHostException e){ Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_LONG).show();}catch (IOException e){ Toast.makeText(getBaseContext(), e.getMessage() , Toast.LENGTH_LONG);}catch (Exception e){e.printStackTrace();}
             return null;
         }
     }
